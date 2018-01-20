@@ -7,6 +7,9 @@
       "MediaWiki\\Tool\\PatchCoverage\\": "src"
     }
   },
+  "bin": [
+    "bin/phpunit-patch-coverage"
+  ],
   "require": {
     "php": ">=5.5.9",
     "legoktm/clover-diff": "^1.0.0",
