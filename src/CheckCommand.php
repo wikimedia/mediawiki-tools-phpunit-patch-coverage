@@ -31,6 +31,15 @@ use Wikimedia\ScopedCallback;
  * Assumes cwd is the git repository
  */
 class CheckCommand extends Command {
+
+	/**
+	 * Once this class is destructed, all of these
+	 * will get run
+	 *
+	 * @var ScopedCallback[]
+	 */
+	private $scopedCallbacks = [];
+
 	protected function configure() {
 		$this->setName( 'check' )
 			->addOption(
@@ -81,9 +90,11 @@ class CheckCommand extends Command {
 		$output->writeln( "Finding coverage difference in $notMerge" );
 		// To reset back to once we're done, use a scoped callback so this
 		// still happens regardless of exceptions
-		$lock = new ScopedCallback( function () use ( $git, $current ) {
-			$git->checkout( $current );
-		} );
+		$this->scopedCallbacks[] = new ScopedCallback(
+			function () use ( $git, $current ) {
+				$git->checkout( $current );
+			}
+		);
 		$git->checkout( $notMerge );
 		$changed = $git->getChangedFiles( $notMerge );
 		$changedFiles = new GitChanged();
