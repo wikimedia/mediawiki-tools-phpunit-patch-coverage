@@ -41,7 +41,8 @@ With full options:
 
 The options shown in the example above are the defaults, and do not need to
 be specified again. You may find it useful to have xdebug disabled by
-default, and then specify it at runtime with `php -dextension=xdebug.so ...`.
+default, and then specify it at runtime with:
+`php -d zend_extension=xdebug.so ...`.
 Or if you have a PHPUnit wrapper (like MediaWiki), you can call that.
 
 Security
