@@ -76,7 +76,9 @@ class CheckCommand extends Command {
 		foreach ( $tests as $test ) {
 			$base = basename( $test );
 			// Strip extension
-			$filter[] = substr( $base, 0, strlen( $base ) - 4 );
+			$filter[] = preg_quote(
+				substr( $base, 0, strlen( $base ) - 4 )
+			);
 		}
 
 		return '\'/' . implode( '|', $filter ) . '/\'';
