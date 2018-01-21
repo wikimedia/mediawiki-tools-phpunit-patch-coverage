@@ -84,6 +84,27 @@ class CheckCommand extends Command {
 		return '\'/' . implode( '|', $filter ) . '/\'';
 	}
 
+	private function runTests( $output, $command, $tests ) {
+		// TODO: Run this in parallel?
+		$clover = tempnam( sys_get_temp_dir(), 'clover' );
+		$cmd = $command .
+			" --coverage-clover $clover --filter " .
+			$this->getFilterRegex( $tests );
+		$process = new CommandProcess( $cmd );
+		// Disable timeout
+		$process->setTimeout( null );
+		// Run and buffer output for progress
+		$process->runWithOutput( $output );
+
+		$this->scopedCallbacks[] = new ScopedCallback(
+			function () use ( $clover ) {
+				unlink( $clover );
+			}
+		);
+
+		return $clover;
+	}
+
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		$git = new Git( getcwd() );
 		$sha1 = $input->getOption( 'sha1' );
@@ -129,18 +150,10 @@ class CheckCommand extends Command {
 
 		// TODO: We need to trim suite.xml coverage filter, because that takes forever
 
+		$command = $input->getOption( 'command' );
 		if ( $testsToRun ) {
 			// Run it!
-			// TODO: Run this in parallel?
-			$newClover = tempnam( sys_get_temp_dir(), 'old-clover' );
-			$cmd = $input->getOption( 'command' ) .
-				" --coverage-clover $newClover --filter " .
-				$this->getFilterRegex( $testsToRun );
-			$process = new CommandProcess( $cmd );
-			// Disable timeout
-			$process->setTimeout( null );
-			// Run and buffer output for progress
-			$process->runWithOutput( $output );
+			$newClover = $this->runTests( $output, $command, $testsToRun );
 		} else {
 			$newClover = null;
 		}
@@ -159,15 +172,7 @@ class CheckCommand extends Command {
 			$this->absolutify( $changedTests->deleted )
 		) );
 		if ( $testsOldToRun ) {
-			$oldClover = tempnam( sys_get_temp_dir(), 'new-clover' );
-			$cmd = $input->getOption( 'command' ) .
-				" --coverage-clover $oldClover --filter " .
-				$this->getFilterRegex( $testsOldToRun );
-			$process = new CommandProcess( $cmd );
-			// Disable timeout
-			$process->setTimeout( null );
-			// Run and buffer output for progress
-			$process->runWithOutput( $output );
+			$oldClover = $this->runTests( $output, $command, $testsOldToRun );
 		} else {
 			$oldClover = null;
 		}
@@ -182,7 +187,6 @@ class CheckCommand extends Command {
 		$diff = ( new Differ() )->diff( $oldClover, $newClover );
 		$printer = new DiffPrinter( $output );
 		$printer->show( $diff );
-		// TODO: clean up tmp clover files
 	}
 
 }
