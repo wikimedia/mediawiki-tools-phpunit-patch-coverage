@@ -172,6 +172,13 @@ class CheckCommand extends Command {
 			$oldClover = null;
 		}
 
+		if ( !$testsToRun && !$testsOldToRun ) {
+			$output->writeln(
+				'<error>Could not find any tests to run.</error>'
+			);
+			return;
+		}
+
 		$diff = ( new Differ() )->diff( $oldClover, $newClover );
 		$printer = new DiffPrinter( $output );
 		$printer->show( $diff );
