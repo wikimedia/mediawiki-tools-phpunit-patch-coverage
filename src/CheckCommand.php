@@ -186,7 +186,9 @@ class CheckCommand extends Command {
 
 		$diff = ( new Differ() )->diff( $oldClover, $newClover );
 		$printer = new DiffPrinter( $output );
-		$printer->show( $diff );
+		$lowered = $printer->show( $diff );
+
+		return $lowered ? 1 : 0;
 	}
 
 }
