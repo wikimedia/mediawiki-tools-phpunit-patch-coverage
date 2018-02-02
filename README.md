@@ -45,11 +45,6 @@ default, and then specify it at runtime with:
 `php -d zend_extension=xdebug.so ...`.
 Or if you have a PHPUnit wrapper (like MediaWiki), you can call that.
 
-Security
---------
-This is likely full of shell injection issues that need to be fixed. For now,
-only run it on code that is reasonably trustworthy.
-
 License
 -------
 phpunit-patch-coverage is (C) 2018 Kunal Mehta, under the terms of the GPL v3

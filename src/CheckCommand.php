@@ -81,7 +81,7 @@ class CheckCommand extends Command {
 			);
 		}
 
-		return '\'/' . implode( '|', $filter ) . '/\'';
+		return escapeshellarg( '/' . implode( '|', $filter ) . '/' );
 	}
 
 	private function runTests( $output, $command, $tests ) {
