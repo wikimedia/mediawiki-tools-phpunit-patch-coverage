@@ -40,13 +40,14 @@ class GitTest extends \PHPUnit_Framework_TestCase {
 		file_put_contents( "$tmp/A.txt", 'foobar' );
 		$p = new Process( 'git add .', $tmp );
 		$p->mustRun();
-		$p = new Process( 'git commit -m commit', $tmp );
+		$conf = '-c user.email="nobody@fake.foo" -c user.name="Nobody"';
+		$p = new Process( "git $conf commit -m commit", $tmp );
 		$p->mustRun();
 		file_put_contents( "$tmp/B.txt", 'barbaz' );
 		file_put_contents( "$tmp/A.txt", 'different' );
 		$p = new Process( 'git add .', $tmp );
 		$p->mustRun();
-		$p = new Process( 'git commit -m commit', $tmp );
+		$p = new Process( "git $conf commit -m commit", $tmp );
 		$p->mustRun();
 
 		$patch = new Git( $tmp );
