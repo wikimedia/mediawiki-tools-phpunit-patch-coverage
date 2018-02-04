@@ -29,21 +29,20 @@ class CommandProcess extends Process {
 
 	public function mustRunWithOutput( OutputInterface $output ) {
 		$output->writeln( '$ ' . $this->getCommandLine() );
-		$this->mustRun( function ( $type, $buffer ) use ( $output ) {
-			if ( $type === Process::ERR ) {
-				$buffer = "<error>$buffer</error>";
-			}
-			$output->write( $buffer );
-		} );
+		$this->mustRun( $this->makeCallback( $output ) );
 	}
 
 	public function runWithOutput( OutputInterface $output ) {
 		$output->writeln( '$ ' . $this->getCommandLine() );
-		$this->run( function ( $type, $buffer ) use ( $output ) {
+		$this->run( $this->makeCallback( $output ) );
+	}
+
+	private function makeCallback( OutputInterface $output ) {
+		return function ( $type, $buffer ) use ( $output ) {
 			if ( $type === Process::ERR ) {
 				$buffer = "<error>$buffer</error>";
 			}
 			$output->write( $buffer );
-		} );
+		};
 	}
 }
