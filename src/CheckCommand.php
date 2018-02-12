@@ -74,11 +74,12 @@ class CheckCommand extends Command {
 		// so we can use that as a shortcut.
 		$filter = [];
 		foreach ( $tests as $test ) {
-			$base = basename( $test );
-			// Strip extension
-			$filter[] = preg_quote(
-				substr( $base, 0, strlen( $base ) - 4 )
-			);
+			$pathInfo = pathinfo( $test );
+			if ( $pathInfo['extension'] !== 'php' ) {
+				// Not a PHP file
+				continue;
+			}
+			$filter[] = preg_quote( $pathInfo['filename'] );
 		}
 
 		return escapeshellarg( '/' . implode( '|', $filter ) . '/' );
