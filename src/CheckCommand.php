@@ -24,7 +24,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 use Wikimedia\ScopedCallback;
 
 /**
@@ -160,8 +159,7 @@ class CheckCommand extends Command {
 		}
 
 		// Now we want to run tests for the old stuff.
-		$process = new Process( 'git checkout HEAD~1' );
-		$process->mustRun();
+		$git->checkout( 'HEAD~1' );
 		$modifiedOldClasses = $classFinder->find( array_merge(
 			$changedFiles->modified,
 			$changedFiles->deleted
