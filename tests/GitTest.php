@@ -26,7 +26,7 @@ use Wikimedia\ScopedCallback;
 /**
  * @covers \MediaWiki\Tool\PatchCoverage\Git
  */
-class GitTest extends \PHPUnit_Framework_TestCase {
+class GitTest extends \PHPUnit\Framework\TestCase {
 
 	public function testGetChangedFiles() {
 		$tmp = sys_get_temp_dir() . '/' . uniqid( 'patchcoverage' );

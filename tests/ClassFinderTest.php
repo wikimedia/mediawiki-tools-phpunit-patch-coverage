@@ -24,7 +24,7 @@ use MediaWiki\Tool\PatchCoverage\ClassFinder;
  * @covers \MediaWiki\Tool\PatchCoverage\ClassFinder
  * @covers \MediaWiki\Tool\PatchCoverage\Parser\ClassTrackerVisitor
  */
-class ClassFinderTest extends \PHPUnit_Framework_TestCase {
+class ClassFinderTest extends \PHPUnit\Framework\TestCase {
 
 	public function testFind() {
 		$finder = new ClassFinder();

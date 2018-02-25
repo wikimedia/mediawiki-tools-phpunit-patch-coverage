@@ -23,7 +23,7 @@ use MediaWiki\Tool\PatchCoverage\TestFinder;
 /**
  * @covers \MediaWiki\Tool\PatchCoverage\TestFinder
  */
-class TestFinderTest extends \PHPUnit_Framework_TestCase {
+class TestFinderTest extends \PHPUnit\Framework\TestCase {
 
 	public function testFind() {
 		$data = __DIR__ . '/data';
