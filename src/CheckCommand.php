@@ -18,6 +18,7 @@
 
 namespace MediaWiki\Tool\PatchCoverage;
 
+use Legoktm\CloverDiff\CloverXml;
 use Legoktm\CloverDiff\Differ;
 use Legoktm\CloverDiff\DiffPrinter;
 use Symfony\Component\Console\Command\Command;
@@ -51,6 +52,10 @@ class CheckCommand extends Command {
 				null, InputOption::VALUE_REQUIRED,
 				'Directory tests are in (relative to git root)',
 				'tests/phpunit'
+			)->addOption(
+				'html',
+				null, InputOption::VALUE_OPTIONAL,
+				'Location to save an HTML report'
 			)->addOption(
 				'command',
 				null, InputOption::VALUE_REQUIRED,
@@ -105,6 +110,33 @@ class CheckCommand extends Command {
 		return $clover;
 	}
 
+	protected function saveFiles( CloverXml $cloverXml ) {
+		$files = [];
+		foreach ( $cloverXml->getFiles( $cloverXml::LINES ) as $fname => $lines ) {
+			// It has at least one covered line
+			if ( !array_sum( $lines ) ) {
+				continue;
+			}
+			$contents = file_get_contents( $fname );
+			$parts = explode( "\n", $contents );
+			foreach ( $parts as $i => &$line ) {
+				if ( isset( $lines[$i + 1] ) && $lines[$i + 1] ) {
+					$line = "✓ $line";
+				} elseif ( isset( $lines[$i + 1] ) ) {
+					// Supposed to be covered, but it isn't
+					$line = "✘ $line";
+				} else {
+					// Just stick some spaces in front so it lines up
+					$line = "  $line";
+				}
+			}
+			unset( $line );
+			$files[$fname] = $parts;
+		}
+
+		return $files;
+	}
+
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		$git = new Git( getcwd() );
 		$sha1 = $input->getOption( 'sha1' );
@@ -153,9 +185,11 @@ class CheckCommand extends Command {
 		$command = $input->getOption( 'command' );
 		if ( $testsToRun ) {
 			// Run it!
-			$newClover = $this->runTests( $output, $command, $testsToRun );
+			$newClover = new CloverXml( $this->runTests( $output, $command, $testsToRun ) );
+			$newFiles = $this->saveFiles( $newClover );
 		} else {
 			$newClover = null;
+			$newFiles = [];
 		}
 
 		// Now we want to run tests for the old stuff.
@@ -171,9 +205,11 @@ class CheckCommand extends Command {
 			$this->absolutify( $changedTests->deleted )
 		) );
 		if ( $testsOldToRun ) {
-			$oldClover = $this->runTests( $output, $command, $testsOldToRun );
+			$oldClover = new CloverXml( $this->runTests( $output, $command, $testsOldToRun ) );
+			$oldFiles = $this->saveFiles( $oldClover );
 		} else {
 			$oldClover = null;
+			$oldFiles = [];
 		}
 
 		if ( !$testsToRun && !$testsOldToRun ) {
@@ -186,6 +222,11 @@ class CheckCommand extends Command {
 		$diff = ( new Differ() )->diff( $oldClover, $newClover );
 		$printer = new DiffPrinter( $output );
 		$lowered = $printer->show( $diff );
+		$reportPath = $input->getOption( 'html' );
+		if ( $reportPath ) {
+			$html = ( new HtmlReport() )->report( $diff, $oldFiles, $newFiles );
+			file_put_contents( $reportPath, $html );
+		}
 
 		return $lowered ? 1 : 0;
 	}
