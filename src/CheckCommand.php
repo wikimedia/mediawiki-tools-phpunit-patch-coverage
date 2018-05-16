@@ -73,7 +73,12 @@ class CheckCommand extends Command {
 		return $newPaths;
 	}
 
-	private function getFilterRegex( $tests ) {
+	/**
+	 * @param array $tests
+	 *
+	 * @return string|false regex or false if no files to test
+	 */
+	private function getFilterRegex( array $tests ) {
 		// PHPUnit requires filename to be the same as the classname,
 		// so we can use that as a shortcut.
 		$filter = [];
@@ -86,15 +91,17 @@ class CheckCommand extends Command {
 			$filter[] = preg_quote( $pathInfo['filename'] );
 		}
 
+		if ( !$filter ) {
+			return false;
+		}
+
 		return escapeshellarg( '/' . implode( '|', $filter ) . '/' );
 	}
 
-	private function runTests( $output, $command, $tests ) {
+	private function runTests( $output, $command, $regex ) {
 		// TODO: Run this in parallel?
 		$clover = tempnam( sys_get_temp_dir(), 'clover' );
-		$cmd = $command .
-			" --coverage-clover $clover --filter " .
-			$this->getFilterRegex( $tests );
+		$cmd = "$command --coverage-clover $clover --filter $regex";
 		$process = new CommandProcess( $cmd );
 		// Disable timeout
 		$process->setTimeout( null );
@@ -179,13 +186,14 @@ class CheckCommand extends Command {
 			$this->absolutify( $changedTests->added ),
 			$this->absolutify( $changedTests->modified )
 		) );
+		$filterRegex = $this->getFilterRegex( $testsToRun );
 
 		// TODO: We need to trim suite.xml coverage filter, because that takes forever
 
 		$command = $input->getOption( 'command' );
-		if ( $testsToRun ) {
+		if ( $filterRegex ) {
 			// Run it!
-			$newClover = new CloverXml( $this->runTests( $output, $command, $testsToRun ) );
+			$newClover = new CloverXml( $this->runTests( $output, $command, $filterRegex ) );
 			$newFiles = $this->saveFiles( $newClover );
 		} else {
 			$newClover = null;
@@ -204,19 +212,20 @@ class CheckCommand extends Command {
 			$this->absolutify( $changedTests->modified ),
 			$this->absolutify( $changedTests->deleted )
 		) );
-		if ( $testsOldToRun ) {
-			$oldClover = new CloverXml( $this->runTests( $output, $command, $testsOldToRun ) );
+		$filterOldRegex = $this->getFilterRegex( $testsOldToRun );
+		if ( $filterOldRegex ) {
+			$oldClover = new CloverXml( $this->runTests( $output, $command, $filterOldRegex ) );
 			$oldFiles = $this->saveFiles( $oldClover );
 		} else {
 			$oldClover = null;
 			$oldFiles = [];
 		}
 
-		if ( !$testsToRun && !$testsOldToRun ) {
+		if ( !$filterRegex && !$filterOldRegex ) {
 			$output->writeln(
 				'<error>Could not find any tests to run.</error>'
 			);
-			return;
+			return 0;
 		}
 
 		$diff = ( new Differ() )->diff( $oldClover, $newClover );
