@@ -18,7 +18,7 @@
 		"symfony/console": "^3.3",
 		"symfony/finder": "^3.3",
 		"symfony/process": "^3.3",
-		"wikimedia/scoped-callback": "^1.0.0"
+		"wikimedia/scoped-callback": "^1.0 || ^2.0"
 	},
 	"require-dev": {
 		"jakub-onderka/php-parallel-lint": "1.0.0",
