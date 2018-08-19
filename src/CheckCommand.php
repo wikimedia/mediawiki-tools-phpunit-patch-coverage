@@ -88,7 +88,11 @@ class CheckCommand extends Command {
 				// Not a PHP file
 				continue;
 			}
-			$filter[] = preg_quote( $pathInfo['filename'] );
+			$testClass = $pathInfo['filename'];
+			// Strip TestBase suffix to make abstract classes work if they have
+			// the same base names (T193107).
+			$testClass = preg_replace( '/TestBase$/', '', $testClass );
+			$filter[] = preg_quote( $testClass );
 		}
 
 		if ( !$filter ) {
