@@ -39,9 +39,6 @@ class CommandProcess extends Process {
 
 	private function makeCallback( OutputInterface $output ) {
 		return function ( $type, $buffer ) use ( $output ) {
-			if ( $type === Process::ERR ) {
-				$buffer = "<error>$buffer</error>";
-			}
 			$output->write( $buffer );
 		};
 	}
