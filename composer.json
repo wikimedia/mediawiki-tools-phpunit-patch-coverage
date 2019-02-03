@@ -25,6 +25,7 @@
 		"jakub-onderka/php-console-highlighter": "0.3.2",
 		"mediawiki/mediawiki-codesniffer": "23.0.0",
 		"mediawiki/minus-x": "0.3.1",
+		"ockcyp/covers-validator": "0.5.1 || 0.6.1",
 		"phpunit/phpunit": "4.8.36 || ^6.5"
 	},
 	"scripts": {
@@ -32,6 +33,7 @@
 			"parallel-lint . --exclude vendor",
 			"phpcs -sp",
 			"phpunit",
+			"covers-validator",
 			"minus-x check ."
 		],
 		"fix": [
