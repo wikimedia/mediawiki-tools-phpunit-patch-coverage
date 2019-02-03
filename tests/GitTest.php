@@ -38,6 +38,8 @@ class GitTest extends \PHPUnit\Framework\TestCase {
 		$p = new Process( 'git init .', $tmp );
 		$p->mustRun();
 		file_put_contents( "$tmp/A.txt", 'foobar' );
+		file_put_contents( "$tmp/C.txt", 'goodbye' );
+		file_put_contents( "$tmp/D.txt", 'goodbye' );
 		$p = new Process( 'git add .', $tmp );
 		$p->mustRun();
 		$conf = '-c user.email="nobody@fake.foo" -c user.name="Nobody"';
@@ -45,6 +47,9 @@ class GitTest extends \PHPUnit\Framework\TestCase {
 		$p->mustRun();
 		file_put_contents( "$tmp/B.txt", 'barbaz' );
 		file_put_contents( "$tmp/A.txt", 'different' );
+		unlink( "$tmp/C.txt" );
+		$p = new Process( 'git mv D.txt E.txt', $tmp );
+		$p->mustRun();
 		$p = new Process( 'git add .', $tmp );
 		$p->mustRun();
 		$p = new Process( "git $conf commit -m commit", $tmp );
@@ -55,7 +60,8 @@ class GitTest extends \PHPUnit\Framework\TestCase {
 			new GitChanged(
 				[ 'B.txt' ],
 				[ 'A.txt' ],
-				[]
+				[ 'D.txt' ],
+				[ 'C.txt' => 'E.txt' ]
 			),
 			$patch->getChangedFiles( 'HEAD' )
 		);

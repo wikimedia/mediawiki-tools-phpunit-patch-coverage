@@ -29,6 +29,7 @@ class Git {
 		'A' => 'added',
 		'D' => 'deleted',
 		'M' => 'modified',
+		'R' => 'renamed',
 	];
 
 	/**
@@ -55,8 +56,14 @@ class Git {
 		$lines = explode( "\n", trim( $process->getOutput() ) );
 		foreach ( $lines as $line ) {
 			$status = self::$status[$line[0]];
-			$file = trim( substr( $line, 1 ) );
-			$changed->{$status}[] = $file;
+			if ( $status === 'renamed' ) {
+				$matches = [];
+				preg_match( '/R\d{3}\s*(\S*)\s*(\S*)/', $line, $matches );
+				$changed->renamed[$matches[1]] = $matches[2];
+			} else {
+				$file = trim( substr( $line, 1 ) );
+				$changed->{$status}[] = $file;
+			}
 		}
 
 		return $changed;

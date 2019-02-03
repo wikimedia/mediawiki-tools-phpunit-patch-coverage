@@ -148,6 +148,20 @@ class CheckCommand extends Command {
 		return $files;
 	}
 
+	protected function filterPaths( array $files, $testDir ) {
+		$changedFiles = [];
+		$changedTests = [];
+		foreach ( $files as $file ) {
+			if ( strpos( $file, $testDir ) === 0 ) {
+				$changedTests[] = $file;
+			} else {
+				$changedFiles[] = $file;
+			}
+		}
+
+		return [ $changedFiles, $changedTests ];
+	}
+
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		$git = new Git( getcwd() );
 		$sha1 = $input->getOption( 'sha1' );
@@ -162,33 +176,21 @@ class CheckCommand extends Command {
 			}
 		);
 		$git->checkout( $notMerge );
-		$changed = $git->getChangedFiles( $notMerge );
-		$changedFiles = new GitChanged();
-		$changedTests = new GitChanged();
 		$testDir = $input->getOption( 'test-dir' );
-		foreach ( (array)$changed as $type => $files ) {
-			foreach ( $files as $file ) {
-				if ( strpos( $file, $testDir ) === 0 ) {
-					$changedTests->{$type}[] = $file;
-				} else {
-					$changedFiles->{$type}[] = $file;
-				}
-			}
-		}
+		$changed = $git->getChangedFiles( $notMerge );
+		list( $changedFiles, $changedTests ) = $this->filterPaths(
+			$changed->getNewFiles(), $testDir
+		);
 
 		$classFinder = new ClassFinder();
-		$modifiedClasses = $classFinder->find( array_merge(
-			$changedFiles->added,
-			$changedFiles->modified
-		) );
+		$modifiedClasses = $classFinder->find( $changedFiles );
 
 		// And find the corresponding tests...
 		$testFinder = new TestFinder( $testDir );
 		$foundTests = $testFinder->find( $modifiedClasses );
 		$testsToRun = array_unique( array_merge(
 			$foundTests,
-			$this->absolutify( $changedTests->added ),
-			$this->absolutify( $changedTests->modified )
+			$this->absolutify( $changedTests )
 		) );
 		$filterRegex = $this->getFilterRegex( $testsToRun );
 
@@ -206,15 +208,15 @@ class CheckCommand extends Command {
 
 		// Now we want to run tests for the old stuff.
 		$git->checkout( 'HEAD~1' );
-		$modifiedOldClasses = $classFinder->find( array_merge(
-			$changedFiles->modified,
-			$changedFiles->deleted
-		) );
+		list( $changedOldFiles, $changedOldTests ) = $this->filterPaths(
+			$changed->getPreviousFiles(), $testDir
+		);
+
+		$modifiedOldClasses = $classFinder->find( $changedOldFiles );
 		$foundOldTests = $testFinder->find( $modifiedOldClasses );
 		$testsOldToRun = array_unique( array_merge(
 			$foundOldTests,
-			$this->absolutify( $changedTests->modified ),
-			$this->absolutify( $changedTests->deleted )
+			$this->absolutify( $changedOldTests )
 		) );
 		$filterOldRegex = $this->getFilterRegex( $testsOldToRun );
 		if ( $filterOldRegex ) {

@@ -36,10 +36,34 @@ class GitChanged {
 	 */
 	public $deleted = [];
 
-	public function __construct( $added = [], $modified = [], $deleted = [] ) {
+	/**
+	 * @var array
+	 */
+	public $renamed = [];
+
+	public function __construct( $added = [], $modified = [], $deleted = [],
+		$renamed = []
+	) {
 		$this->added = $added;
 		$this->modified = $modified;
 		$this->deleted = $deleted;
+		$this->renamed = $renamed;
+	}
+
+	public function getPreviousFiles() {
+		return array_merge(
+			$this->deleted,
+			$this->modified,
+			array_keys( $this->renamed )
+		);
+	}
+
+	public function getNewFiles() {
+		return array_merge(
+			$this->added,
+			$this->modified,
+			array_values( $this->renamed )
+		);
 	}
 
 }
