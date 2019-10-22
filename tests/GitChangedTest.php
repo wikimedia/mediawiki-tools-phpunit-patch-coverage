@@ -27,7 +27,7 @@ class GitChangedTest extends \PHPUnit\Framework\TestCase {
 
 	private $changed;
 
-	public function setUp() {
+	public function setUp() : void {
 		parent::setUp();
 		$this->changed = new GitChanged(
 			[ 'B.txt' ],
