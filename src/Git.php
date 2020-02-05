@@ -48,7 +48,7 @@ class Git {
 	 */
 	public function getChangedFiles( $ref ) {
 		$process = new Process(
-			"git diff --name-status $ref^ $ref"
+			[ 'git', 'diff', '--name-status', $ref . '^', $ref ]
 		);
 		$process->setWorkingDirectory( $this->path );
 		$process->mustRun();
@@ -76,7 +76,7 @@ class Git {
 	 */
 	public function checkout( $ref ) {
 		$process = new Process(
-			"git checkout $ref"
+			[ 'git', 'checkout', $ref ]
 		);
 		$process->mustRun();
 	}
@@ -90,7 +90,7 @@ class Git {
 	 */
 	public function getSha1( $ref ) {
 		$process = new Process(
-			"git rev-parse $ref"
+			[ 'git', 'rev-parse', $ref ]
 		);
 		$process->mustRun();
 		return trim( $process->getOutput() );
@@ -106,7 +106,7 @@ class Git {
 	 */
 	public function findNonMergeCommit( $ref ) {
 		$process = new Process(
-			"git log --format=%P $ref -n1"
+			[ 'git', 'log', '--format=%P', $ref, '-n1' ]
 		);
 		$process->mustRun();
 		$exploded = explode( ' ', trim( $process->getOutput() ) );

@@ -32,27 +32,27 @@ class GitTest extends \PHPUnit\Framework\TestCase {
 		$tmp = sys_get_temp_dir() . '/' . uniqid( 'patchcoverage' );
 		mkdir( $tmp );
 		$teardown = new ScopedCallback( function () use ( $tmp ) {
-			$p = new Process( "rm -rf $tmp" );
+			$p = new Process( [ 'rm', '-rf', $tmp ] );
 			$p->mustRun();
 		} );
-		$p = new Process( 'git init .', $tmp );
+		$p = new Process( [ 'git', 'init', '.' ], $tmp );
 		$p->mustRun();
 		file_put_contents( "$tmp/A.txt", 'foobar' );
 		file_put_contents( "$tmp/C.txt", 'goodbye' );
 		file_put_contents( "$tmp/D.txt", 'goodbye' );
-		$p = new Process( 'git add .', $tmp );
+		$p = new Process( [ 'git', 'add', '.' ], $tmp );
 		$p->mustRun();
-		$conf = '-c user.email="nobody@fake.foo" -c user.name="Nobody"';
-		$p = new Process( "git $conf commit -m commit", $tmp );
+		$conf = [ '-c', 'user.email="nobody@fake.foo"', '-c', 'user.name="Nobody"' ];
+		$p = new Process( array_merge( [ 'git' ], $conf, [ 'commit', '-m', 'commit' ] ), $tmp );
 		$p->mustRun();
 		file_put_contents( "$tmp/B.txt", 'barbaz' );
 		file_put_contents( "$tmp/A.txt", 'different' );
 		unlink( "$tmp/C.txt" );
-		$p = new Process( 'git mv D.txt E.txt', $tmp );
+		$p = new Process( [ 'git', 'mv', 'D.txt', 'E.txt' ], $tmp );
 		$p->mustRun();
-		$p = new Process( 'git add .', $tmp );
+		$p = new Process( [ 'git', 'add', '.' ], $tmp );
 		$p->mustRun();
-		$p = new Process( "git $conf commit -m commit", $tmp );
+		$p = new Process( array_merge( [ 'git' ], $conf, [ 'commit', '-m', 'commit' ] ), $tmp );
 		$p->mustRun();
 
 		$patch = new Git( $tmp );
