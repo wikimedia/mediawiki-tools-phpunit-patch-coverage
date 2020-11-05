@@ -20,8 +20,8 @@ namespace MediaWiki\Tool\PatchCoverage;
 
 use Legoktm\CloverDiff\Diff;
 use Legoktm\CloverDiff\DiffPrinter;
-use Phalcon\Diff\Renderer\Html\SideBySide;
 use Phalcon\Diff as PhalconDiff;
+use Phalcon\Diff\Renderer\Html\SideBySide;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
