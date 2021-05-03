@@ -38,7 +38,7 @@ class CommandProcess extends Process {
 	}
 
 	private function makeCallback( OutputInterface $output ) {
-		return function ( $type, $buffer ) use ( $output ) {
+		return static function ( $type, $buffer ) use ( $output ) {
 			$output->write( $buffer );
 		};
 	}

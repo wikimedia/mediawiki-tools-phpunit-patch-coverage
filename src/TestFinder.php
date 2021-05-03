@@ -43,7 +43,7 @@ class TestFinder {
 		if ( !$classes ) {
 			return [];
 		}
-		$regex = implode( '|', array_map( function ( $class ) {
+		$regex = implode( '|', array_map( static function ( $class ) {
 			return preg_quote( $class );
 		}, $classes ) );
 		// Look for @covers, @coversDefaultClass

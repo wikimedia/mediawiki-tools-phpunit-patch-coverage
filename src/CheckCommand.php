@@ -113,7 +113,7 @@ class CheckCommand extends Command {
 		$process->runWithOutput( $output );
 
 		$this->scopedCallbacks[] = new ScopedCallback(
-			function () use ( $clover ) {
+			static function () use ( $clover ) {
 				unlink( $clover );
 			}
 		);
@@ -171,7 +171,7 @@ class CheckCommand extends Command {
 		// To reset back to once we're done, use a scoped callback so this
 		// still happens regardless of exceptions
 		$this->scopedCallbacks[] = new ScopedCallback(
-			function () use ( $git, $current ) {
+			static function () use ( $git, $current ) {
 				$git->checkout( $current );
 			}
 		);

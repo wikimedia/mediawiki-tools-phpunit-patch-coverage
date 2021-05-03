@@ -31,7 +31,7 @@ class GitTest extends \PHPUnit\Framework\TestCase {
 	public function testGetChangedFiles() {
 		$tmp = sys_get_temp_dir() . '/' . uniqid( 'patchcoverage' );
 		mkdir( $tmp );
-		$teardown = new ScopedCallback( function () use ( $tmp ) {
+		$teardown = new ScopedCallback( static function () use ( $tmp ) {
 			$p = new Process( [ 'rm', '-rf', $tmp ] );
 			$p->mustRun();
 		} );
