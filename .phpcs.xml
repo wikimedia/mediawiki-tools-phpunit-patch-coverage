@@ -11,5 +11,4 @@
 	<file>.</file>
 	<arg name="encoding" value="UTF-8"/>
 	<arg name="extensions" value="php"/>
-	<exclude-pattern>vendor</exclude-pattern>
 </ruleset>
