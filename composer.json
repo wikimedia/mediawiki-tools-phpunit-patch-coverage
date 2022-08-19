@@ -30,9 +30,9 @@
 	},
 	"scripts": {
 		"test": [
+			"phpunit",
 			"parallel-lint . --exclude vendor",
 			"@phpcs",
-			"phpunit",
 			"covers-validator",
 			"minus-x check ."
 		],
