@@ -27,10 +27,12 @@ class GitChanged {
 	 * @var string[]
 	 */
 	public $added = [];
+
 	/**
 	 * @var string[]
 	 */
 	public $modified = [];
+
 	/**
 	 * @var string[]
 	 */
@@ -41,6 +43,12 @@ class GitChanged {
 	 */
 	public $renamed = [];
 
+	/**
+	 * @param array $added
+	 * @param array $modified
+	 * @param array $deleted
+	 * @param array $renamed
+	 */
 	public function __construct( $added = [], $modified = [], $deleted = [],
 		$renamed = []
 	) {
@@ -50,6 +58,9 @@ class GitChanged {
 		$this->renamed = $renamed;
 	}
 
+	/**
+	 * @return array|int[]|string[]
+	 */
 	public function getPreviousFiles() {
 		return array_merge(
 			$this->deleted,
@@ -58,6 +69,9 @@ class GitChanged {
 		);
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getNewFiles() {
 		return array_merge(
 			$this->added,

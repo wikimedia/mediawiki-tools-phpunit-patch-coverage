@@ -30,6 +30,9 @@ class TestFinder {
 	 */
 	private $testDir;
 
+	/**
+	 * @param string $testDir
+	 */
 	public function __construct( $testDir ) {
 		$this->testDir = $testDir;
 	}

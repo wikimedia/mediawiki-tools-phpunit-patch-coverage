@@ -19,11 +19,12 @@
 namespace MediaWiki\Tool\PatchCoverage\Test;
 
 use MediaWiki\Tool\PatchCoverage\TestFinder;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \MediaWiki\Tool\PatchCoverage\TestFinder
  */
-class TestFinderTest extends \PHPUnit\Framework\TestCase {
+class TestFinderTest extends TestCase {
 
 	public function testFind() {
 		$data = __DIR__ . '/data';

@@ -29,6 +29,13 @@ use Symfony\Component\Console\Output\BufferedOutput;
  */
 class HtmlReport {
 
+	/**
+	 * @param Diff $diff
+	 * @param array $oldFiles
+	 * @param array $newFiles
+	 *
+	 * @return string
+	 */
 	public function report( Diff $diff, array $oldFiles, array $newFiles ) {
 		$html = <<<HTML
 <!DOCTYPE html>

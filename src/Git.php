@@ -25,6 +25,9 @@ use Symfony\Component\Process\Process;
  */
 class Git {
 
+	/**
+	 * @var string[]
+	 */
 	private static $status = [
 		'A' => 'added',
 		'D' => 'deleted',
@@ -37,6 +40,9 @@ class Git {
 	 */
 	private $path;
 
+	/**
+	 * @param string $path
+	 */
 	public function __construct( $path ) {
 		$this->path = $path;
 	}

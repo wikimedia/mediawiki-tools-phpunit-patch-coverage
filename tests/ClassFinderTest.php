@@ -19,12 +19,13 @@
 namespace MediaWiki\Tool\PatchCoverage\Test;
 
 use MediaWiki\Tool\PatchCoverage\ClassFinder;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \MediaWiki\Tool\PatchCoverage\ClassFinder
  * @covers \MediaWiki\Tool\PatchCoverage\Parser\ClassTrackerVisitor
  */
-class ClassFinderTest extends \PHPUnit\Framework\TestCase {
+class ClassFinderTest extends TestCase {
 
 	public function testFind() {
 		$finder = new ClassFinder();

@@ -19,13 +19,17 @@
 namespace MediaWiki\Tool\PatchCoverage\Test;
 
 use MediaWiki\Tool\PatchCoverage\GitChanged;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \MediaWiki\Tool\PatchCoverage\GitChanged
  */
-class GitChangedTest extends \PHPUnit\Framework\TestCase {
+class GitChangedTest extends TestCase {
 
-	private $changed;
+	/**
+	 * @var GitChanged
+	 */
+	private GitChanged $changed;
 
 	public function setUp(): void {
 		parent::setUp();

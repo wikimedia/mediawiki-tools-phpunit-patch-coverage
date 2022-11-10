@@ -20,11 +20,12 @@ namespace MediaWiki\Tool\PatchCoverage\Test;
 
 use Legoktm\CloverDiff\Diff;
 use MediaWiki\Tool\PatchCoverage\HtmlReport;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \MediaWiki\Tool\PatchCoverage\HtmlReport
  */
-class HtmlReportTest extends \PHPUnit\Framework\TestCase {
+class HtmlReportTest extends TestCase {
 
 	public function testFind() {
 		$diff = new Diff( [], [] );

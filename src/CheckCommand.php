@@ -64,6 +64,11 @@ class CheckCommand extends Command {
 			);
 	}
 
+	/**
+	 * @param array $paths
+	 *
+	 * @return array
+	 */
 	private function absolutify( array $paths ) {
 		$newPaths = [];
 		foreach ( $paths as $path ) {
@@ -102,10 +107,21 @@ class CheckCommand extends Command {
 		return escapeshellarg( '/' . implode( '|', $filter ) . '/' );
 	}
 
+	/**
+	 * @param OutputInterface $output
+	 * @param string $command
+	 * @param string $regex
+	 *
+	 * @return false|string
+	 */
 	private function runTests( $output, $command, $regex ) {
 		// TODO: Run this in parallel?
 		$clover = tempnam( sys_get_temp_dir(), 'clover' );
-		$cmd = "$command --coverage-clover $clover --filter $regex";
+		$cmd = [
+			$command,
+			"--coverage-clover $clover",
+			"--filter $regex",
+		];
 		$process = new CommandProcess( $cmd );
 		// Disable timeout
 		$process->setTimeout( null );
@@ -121,6 +137,11 @@ class CheckCommand extends Command {
 		return $clover;
 	}
 
+	/**
+	 * @param CloverXml $cloverXml
+	 *
+	 * @return array
+	 */
 	protected function saveFiles( CloverXml $cloverXml ) {
 		$files = [];
 		foreach ( $cloverXml->getFiles( $cloverXml::LINES ) as $fname => $lines ) {
@@ -148,6 +169,12 @@ class CheckCommand extends Command {
 		return $files;
 	}
 
+	/**
+	 * @param array $files
+	 * @param string $testDir
+	 *
+	 * @return array[]
+	 */
 	protected function filterPaths( array $files, $testDir ) {
 		$changedFiles = [];
 		$changedTests = [];
@@ -162,6 +189,12 @@ class CheckCommand extends Command {
 		return [ $changedFiles, $changedTests ];
 	}
 
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 *
+	 * @return int
+	 */
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		$git = new Git( getcwd() );
 		$sha1 = $input->getOption( 'sha1' );

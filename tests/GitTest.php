@@ -20,13 +20,14 @@ namespace MediaWiki\Tool\PatchCoverage\Test;
 
 use MediaWiki\Tool\PatchCoverage\Git;
 use MediaWiki\Tool\PatchCoverage\GitChanged;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
 use Wikimedia\ScopedCallback;
 
 /**
  * @covers \MediaWiki\Tool\PatchCoverage\Git
  */
-class GitTest extends \PHPUnit\Framework\TestCase {
+class GitTest extends TestCase {
 
 	public function testGetChangedFiles() {
 		$tmp = sys_get_temp_dir() . '/' . uniqid( 'patchcoverage' );

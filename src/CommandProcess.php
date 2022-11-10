@@ -27,16 +27,27 @@ use Symfony\Component\Process\Process;
  */
 class CommandProcess extends Process {
 
+	/**
+	 * @param OutputInterface $output
+	 */
 	public function mustRunWithOutput( OutputInterface $output ) {
 		$output->writeln( '$ ' . $this->getCommandLine() );
 		$this->mustRun( $this->makeCallback( $output ) );
 	}
 
+	/**
+	 * @param OutputInterface $output
+	 */
 	public function runWithOutput( OutputInterface $output ) {
 		$output->writeln( '$ ' . $this->getCommandLine() );
 		$this->run( $this->makeCallback( $output ) );
 	}
 
+	/**
+	 * @param OutputInterface $output
+	 *
+	 * @return \Closure
+	 */
 	private function makeCallback( OutputInterface $output ) {
 		return static function ( $type, $buffer ) use ( $output ) {
 			$output->write( $buffer );

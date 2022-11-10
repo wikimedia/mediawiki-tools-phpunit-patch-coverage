@@ -27,8 +27,16 @@ use PhpParser\NodeVisitorAbstract;
  */
 class ClassTrackerVisitor extends NodeVisitorAbstract {
 
+	/**
+	 * @var array
+	 */
 	public $classes = [];
 
+	/**
+	 * @param Node $node
+	 *
+	 * @return int|void|null
+	 */
 	public function enterNode( Node $node ) {
 		if ( $node instanceof Node\Stmt\Class_
 			|| $node instanceof Node\Stmt\Trait_
