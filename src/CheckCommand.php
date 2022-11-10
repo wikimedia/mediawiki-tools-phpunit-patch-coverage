@@ -87,9 +87,10 @@ class CheckCommand extends Command {
 		// PHPUnit requires filename to be the same as the classname,
 		// so we can use that as a shortcut.
 		$filter = [];
+
 		foreach ( $tests as $test ) {
 			$pathInfo = pathinfo( $test );
-			if ( $pathInfo['extension'] !== 'php' ) {
+			if ( ( $pathInfo['extension'] ?? '' ) !== 'php' ) {
 				// Not a PHP file
 				continue;
 			}
