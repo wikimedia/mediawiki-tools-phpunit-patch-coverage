@@ -118,12 +118,9 @@ class CheckCommand extends Command {
 	private function runTests( $output, $command, $regex ) {
 		// TODO: Run this in parallel?
 		$clover = tempnam( sys_get_temp_dir(), 'clover' );
-		$cmd = [
-			$command,
-			"--coverage-clover $clover",
-			"--filter $regex",
-		];
-		$process = new CommandProcess( $cmd );
+		$process = CommandProcess::fromShellCommandline(
+			"$command --coverage-clover $clover --filter $regex"
+		);
 		// Disable timeout
 		$process->setTimeout( null );
 		// Run and buffer output for progress
