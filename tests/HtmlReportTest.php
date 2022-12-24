@@ -18,9 +18,9 @@
 
 namespace MediaWiki\Tool\PatchCoverage\Test;
 
-use Legoktm\CloverDiff\Diff;
 use MediaWiki\Tool\PatchCoverage\HtmlReport;
 use PHPUnit\Framework\TestCase;
+use Wikimedia\CloverDiff\Diff;
 
 /**
  * @covers \MediaWiki\Tool\PatchCoverage\HtmlReport

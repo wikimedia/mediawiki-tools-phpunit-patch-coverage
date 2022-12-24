@@ -18,13 +18,13 @@
 
 namespace MediaWiki\Tool\PatchCoverage;
 
-use Legoktm\CloverDiff\CloverXml;
-use Legoktm\CloverDiff\Differ;
-use Legoktm\CloverDiff\DiffPrinter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Wikimedia\CloverDiff\CloverXml;
+use Wikimedia\CloverDiff\Differ;
+use Wikimedia\CloverDiff\DiffPrinter;
 use Wikimedia\ScopedCallback;
 
 /**

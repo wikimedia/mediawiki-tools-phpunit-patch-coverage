@@ -18,11 +18,11 @@
 
 namespace MediaWiki\Tool\PatchCoverage;
 
-use Legoktm\CloverDiff\Diff;
-use Legoktm\CloverDiff\DiffPrinter;
 use Phalcon\Diff as PhalconDiff;
 use Phalcon\Diff\Renderer\Html\SideBySide;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Wikimedia\CloverDiff\Diff;
+use Wikimedia\CloverDiff\DiffPrinter;
 
 /**
  * Build an HTML report that's helpfully nice for humans to use
