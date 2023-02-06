@@ -31,6 +31,12 @@ I think it will do reasonably well.
 
 Usage
 -----
+
+Add the composer dependency to your project:
+```
+composer require --dev mediawiki/phpunit-patch-coverage
+```
+
 The current working directory must be your git repository.
 With full options:
 ```
