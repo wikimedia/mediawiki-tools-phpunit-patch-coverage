@@ -209,7 +209,7 @@ class CheckCommand extends Command {
 		$git->checkout( $notMerge );
 		$testDir = $input->getOption( 'test-dir' );
 		$changed = $git->getChangedFiles( $notMerge );
-		list( $changedFiles, $changedTests ) = $this->filterPaths(
+		[ $changedFiles, $changedTests ] = $this->filterPaths(
 			$changed->getNewFiles(), $testDir
 		);
 
@@ -239,7 +239,7 @@ class CheckCommand extends Command {
 
 		// Now we want to run tests for the old stuff.
 		$git->checkout( 'HEAD~1' );
-		list( $changedOldFiles, $changedOldTests ) = $this->filterPaths(
+		[ $changedOldFiles, $changedOldTests ] = $this->filterPaths(
 			$changed->getPreviousFiles(), $testDir
 		);
 
