@@ -27,11 +27,12 @@ use PHPUnit\Framework\TestCase;
 class TestFinderTest extends TestCase {
 
 	public function testFind() {
-		$data = __DIR__ . '/data';
+		$data = self::fixSlashes( __DIR__ . '/data' );
 		$finder = new TestFinder( $data );
 		$found = $finder->find( [
 			'A', 'B', 'C', 'D\E\F', 'G', 'H'
 		] );
+		$found = array_map( [ self::class, 'fixSlashes' ], $found );
 		$this->assertSame( [
 			"$data/Dummy1Test.php",
 			"$data/Dummy2Test.php",
@@ -41,5 +42,10 @@ class TestFinderTest extends TestCase {
 			"$data/Dummy5Test.php",
 			// No Dummy 6
 		], $found );
+	}
+
+	private static function fixSlashes( string $str ): string {
+		// Replace dir separator for windows machine
+		return str_replace( '\\', '/', $str );
 	}
 }

@@ -32,6 +32,9 @@ class HtmlReportTest extends TestCase {
 		$report = new HtmlReport();
 		$html = $report->report( $diff, [], [] );
 
+		// Do a "\r\n" -> "\n" and "\r" -> "\n" transformation for windows machine
+		$html = str_replace( [ "\r\n", "\r" ], "\n", $html );
+
 		$this->assertSame( '<!DOCTYPE html>
 <html>
 	<head>
