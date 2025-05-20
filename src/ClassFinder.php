@@ -41,17 +41,18 @@ class ClassFinder {
 			return [];
 		}
 		$parser = ( new ParserFactory() )
-			->create( ParserFactory::PREFER_PHP7 );
+			->createForHostVersion();
 		$tracker = new ClassTrackerVisitor();
 		foreach ( $files as $file ) {
 			$contents = file_get_contents( $file );
 			$tree = $parser->parse( $contents );
+			if ( $tree ) {
 			// TODO: Do we need a new traverser each time?
-			$traverser = new NodeTraverser();
-			$traverser->addVisitor( new NameResolver() );
-			$traverser->addVisitor( $tracker );
-			$traverser->traverse( $tree );
-
+				$traverser = new NodeTraverser();
+				$traverser->addVisitor( new NameResolver() );
+				$traverser->addVisitor( $tracker );
+				$traverser->traverse( $tree );
+			}
 		}
 
 		sort( $tracker->classes );

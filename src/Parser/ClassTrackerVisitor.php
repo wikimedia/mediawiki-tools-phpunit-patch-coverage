@@ -19,7 +19,7 @@
 namespace MediaWiki\Tool\PatchCoverage\Parser;
 
 use PhpParser\Node;
-use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
 
 /**
@@ -42,7 +42,7 @@ class ClassTrackerVisitor extends NodeVisitorAbstract {
 			|| $node instanceof Node\Stmt\Trait_
 		) {
 			$this->classes[] = (string)$node->namespacedName;
-			return NodeTraverser::DONT_TRAVERSE_CHILDREN;
+			return NodeVisitor::DONT_TRAVERSE_CHILDREN;
 		}
 	}
 }
