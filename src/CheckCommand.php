@@ -225,7 +225,7 @@ class CheckCommand extends Command {
 		) );
 		$filterRegex = $this->getFilterRegex( $testsToRun );
 
-		// TODO: We need to trim suite.xml coverage filter, because that takes forever
+		// TODO: We need to trim the coverage filter, because that takes forever
 
 		$command = $input->getOption( 'command' );
 		if ( $filterRegex ) {
