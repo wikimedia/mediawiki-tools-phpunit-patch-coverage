@@ -187,13 +187,7 @@ class CheckCommand extends Command {
 		return [ $changedFiles, $changedTests ];
 	}
 
-	/**
-	 * @param InputInterface $input
-	 * @param OutputInterface $output
-	 *
-	 * @return int
-	 */
-	protected function execute( InputInterface $input, OutputInterface $output ) {
+	protected function execute( InputInterface $input, OutputInterface $output ): int {
 		$git = new Git( getcwd() );
 		$sha1 = $input->getOption( 'sha1' );
 		$current = $git->getSha1( 'HEAD' );
