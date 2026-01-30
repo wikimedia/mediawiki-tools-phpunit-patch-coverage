@@ -63,7 +63,7 @@ class CheckCommandTest extends TestCase {
 		// ClassFinder finds A
 		// TestFinder should identify ATest and CTest, not BTest.
 		$buffer = $out->fetch();
-		$this->assertStringContainsString( "--filter '/ATest|CTest/'", $buffer );
+		$this->assertMatchesRegularExpression( "/--filter ['\"]\/ATest\|CTest\/['\"]/", $buffer );
 		$this->assertStringContainsString( 'No coverage changes found.', $buffer );
 		$this->assertSame( 0, $exit );
 	}
@@ -81,7 +81,7 @@ class CheckCommandTest extends TestCase {
 		);
 		$p->mustRun();
 
-		$this->assertStringContainsString( "--filter '/ATest|CTest/'", $p->getOutput() );
+		$this->assertMatchesRegularExpression( "/--filter ['\"]\/ATest\|CTest\/['\"]/", $p->getOutput() );
 		$this->assertStringContainsString( 'No coverage changes found.', $p->getOutput() );
 	}
 }
