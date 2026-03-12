@@ -259,6 +259,9 @@ class CheckCommand extends Command {
 			return 0;
 		}
 
+		// (T419359) Add a newline after the PHPUnit output for clarity
+		$output->writeln( '' );
+
 		$diff = ( new Differ() )->diff( $oldClover, $newClover );
 		$printer = new DiffPrinter( $output );
 		$lowered = $printer->show( $diff );
