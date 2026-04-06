@@ -20,8 +20,7 @@ declare( strict_types = 1 );
 
 namespace MediaWiki\Tool\PatchCoverage;
 
-use Phalcon\Diff as PhalconDiff;
-use Phalcon\Diff\Renderer\Html\SideBySide;
+use Jfcherng\Diff\DiffHelper;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Wikimedia\CloverDiff\Diff;
 use Wikimedia\CloverDiff\DiffPrinter;
@@ -46,9 +45,7 @@ class HtmlReport {
 <title>Coverage difference report</title>
 <meta charset="utf-8"/>
 <style>
-.Differences {
-  font-family: monospace;
-}
+{$this->getDiffStylesheet()}
 </style>
 	</head>
 	<body>
@@ -59,12 +56,22 @@ HTML;
 		$html .= "<pre>{$output->fetch()}</pre>";
 		foreach ( array_keys( $diff->getChanged() ) as $fname ) {
 			if ( isset( $newFiles[$fname] ) && isset( $oldFiles[$fname] ) ) {
-				$pdiff = new PhalconDiff( $oldFiles[$fname], $newFiles[$fname] );
 				$html .= "<h2>$fname</h2>\n";
-				$html .= $pdiff->render( new SideBySide() );
+				$html .= DiffHelper::calculate(
+					$oldFiles[$fname],
+					$newFiles[$fname],
+					'SideBySide'
+				);
 			}
 		}
 
 		return $html . '</body></html>';
+	}
+
+	/**
+	 * @return string
+	 */
+	private function getDiffStylesheet() {
+		return DiffHelper::getStyleSheet();
 	}
 }

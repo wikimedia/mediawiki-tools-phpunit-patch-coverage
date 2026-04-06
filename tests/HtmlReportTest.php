@@ -37,21 +37,9 @@ class HtmlReportTest extends TestCase {
 		// Do a "\r\n" -> "\n" and "\r" -> "\n" transformation for windows machine
 		$html = str_replace( [ "\r\n", "\r" ], "\n", $html );
 
-		$this->assertSame( '<!DOCTYPE html>
-<html>
-	<head>
-<title>Coverage difference report</title>
-<meta charset="utf-8"/>
-<style>
-.Differences {
-  font-family: monospace;
-}
-</style>
-	</head>
-	<body>
-	<h2>Summary</h2><pre>No coverage changes found.
-</pre></body></html>',
-			$html
-		);
+		$this->assertStringContainsString( '<title>Coverage difference report</title>', $html );
+		$this->assertStringContainsString( '<h2>Summary</h2>', $html );
+		$this->assertStringContainsString( 'No coverage changes found.', $html );
+		$this->assertStringContainsString( '.diff-wrapper.diff', $html );
 	}
 }
