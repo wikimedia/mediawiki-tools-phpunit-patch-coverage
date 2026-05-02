@@ -49,7 +49,7 @@ class TestFinder {
 			return [];
 		}
 		$regex = implode( '|', array_map( static function ( $class ) {
-			return preg_quote( $class );
+			return preg_quote( $class, '/' );
 		}, $classes ) );
 		// Look for @covers, @coversDefaultClass
 		// There might be a leading \ or not

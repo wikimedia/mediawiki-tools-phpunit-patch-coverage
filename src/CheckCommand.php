@@ -100,7 +100,7 @@ class CheckCommand extends Command {
 			// Strip TestBase suffix to make abstract classes work if they have
 			// the same base names (T193107).
 			$testClass = preg_replace( '/TestBase$/', '', $testClass );
-			$filter[] = preg_quote( $testClass );
+			$filter[] = preg_quote( $testClass, '/' );
 		}
 
 		if ( !$filter ) {
