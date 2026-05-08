@@ -150,6 +150,9 @@ class CheckCommand extends Command {
 				continue;
 			}
 			$contents = file_get_contents( $fname );
+			if ( !$contents ) {
+				continue;
+			}
 			$parts = explode( "\n", $contents );
 			foreach ( $parts as $i => &$line ) {
 				if ( isset( $lines[$i + 1] ) && $lines[$i + 1] ) {
