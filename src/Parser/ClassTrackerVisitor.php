@@ -28,15 +28,9 @@ use PhpParser\NodeVisitorAbstract;
  * Keeps track of all the classes and traits it sees
  */
 class ClassTrackerVisitor extends NodeVisitorAbstract {
+	public array $classes = [];
 
 	/**
-	 * @var array
-	 */
-	public $classes = [];
-
-	/**
-	 * @param Node $node
-	 *
 	 * @return int|void|null
 	 */
 	public function enterNode( Node $node ) {

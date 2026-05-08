@@ -40,7 +40,7 @@ class CheckCommand extends Command {
 	 *
 	 * @var ScopedCallback[]
 	 */
-	private $scopedCallbacks = [];
+	private array $scopedCallbacks = [];
 
 	protected function configure() {
 		$this->setName( 'check' )
@@ -66,12 +66,7 @@ class CheckCommand extends Command {
 			);
 	}
 
-	/**
-	 * @param array $paths
-	 *
-	 * @return array
-	 */
-	private function absolutify( array $paths ) {
+	private function absolutify( array $paths ): array {
 		$newPaths = [];
 		foreach ( $paths as $path ) {
 			$newPaths[] = getcwd() . DIRECTORY_SEPARATOR . $path;
@@ -81,11 +76,9 @@ class CheckCommand extends Command {
 	}
 
 	/**
-	 * @param array $tests
-	 *
 	 * @return string|false regex or false if no files to test
 	 */
-	private function getFilterRegex( array $tests ) {
+	private function getFilterRegex( array $tests ): string|false {
 		// PHPUnit requires filename to be the same as the classname,
 		// so we can use that as a shortcut.
 		$filter = [];
@@ -110,14 +103,7 @@ class CheckCommand extends Command {
 		return escapeshellarg( '/' . implode( '|', $filter ) . '/' );
 	}
 
-	/**
-	 * @param OutputInterface $output
-	 * @param string $command
-	 * @param string $regex
-	 *
-	 * @return false|string
-	 */
-	private function runTests( $output, $command, $regex ) {
+	private function runTests( OutputInterface $output, string $command, string $regex ): string|false {
 		// TODO: Run this in parallel?
 		$clover = tempnam( sys_get_temp_dir(), 'clover' );
 		$process = CommandProcess::fromShellCommandline(
@@ -137,12 +123,7 @@ class CheckCommand extends Command {
 		return $clover;
 	}
 
-	/**
-	 * @param CloverXml $cloverXml
-	 *
-	 * @return array
-	 */
-	protected function saveFiles( CloverXml $cloverXml ) {
+	protected function saveFiles( CloverXml $cloverXml ): array {
 		$files = [];
 		foreach ( $cloverXml->getFiles( $cloverXml::LINES ) as $fname => $lines ) {
 			// It has at least one covered line
@@ -172,13 +153,7 @@ class CheckCommand extends Command {
 		return $files;
 	}
 
-	/**
-	 * @param array $files
-	 * @param string $testDir
-	 *
-	 * @return array[]
-	 */
-	protected function filterPaths( array $files, $testDir ) {
+	protected function filterPaths( array $files, string $testDir ): array {
 		$changedFiles = [];
 		$changedTests = [];
 		foreach ( $files as $file ) {

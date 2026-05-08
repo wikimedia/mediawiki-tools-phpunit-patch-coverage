@@ -30,31 +30,17 @@ class Git {
 	/**
 	 * @var string[]
 	 */
-	private static $status = [
+	private static array $status = [
 		'A' => 'added',
 		'D' => 'deleted',
 		'M' => 'modified',
 		'R' => 'renamed',
 	];
 
-	/**
-	 * @var string
-	 */
-	private $path;
-
-	/**
-	 * @param string $path
-	 */
-	public function __construct( $path ) {
-		$this->path = $path;
+	public function __construct( private readonly string $path ) {
 	}
 
-	/**
-	 * @param string $ref
-	 *
-	 * @return GitChanged
-	 */
-	public function getChangedFiles( $ref ) {
+	public function getChangedFiles( string $ref ): GitChanged {
 		$process = new Process(
 			[ 'git', 'diff', '--name-status', $ref . '^', $ref ]
 		);
@@ -79,10 +65,8 @@ class Git {
 
 	/**
 	 * git checkout
-	 *
-	 * @param string $ref
 	 */
-	public function checkout( $ref ) {
+	public function checkout( string $ref ): void {
 		$process = new Process(
 			[ 'git', 'checkout', $ref ]
 		);
@@ -91,12 +75,8 @@ class Git {
 
 	/**
 	 * Get a SHA1 for any ref
-	 *
-	 * @param string $ref
-	 *
-	 * @return string
 	 */
-	public function getSha1( $ref ) {
+	public function getSha1( string $ref ): string {
 		$process = new Process(
 			[ 'git', 'rev-parse', $ref ]
 		);
@@ -107,12 +87,8 @@ class Git {
 	/**
 	 * If $ref is a merge commit, get its parent,
 	 * otherwise return $ref
-	 *
-	 * @param string $ref
-	 *
-	 * @return string
 	 */
-	public function findNonMergeCommit( $ref ) {
+	public function findNonMergeCommit( string $ref ): string {
 		$process = new Process(
 			[ 'git', 'log', '--format=%P', $ref, '-n1' ]
 		);

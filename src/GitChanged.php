@@ -25,45 +25,22 @@ namespace MediaWiki\Tool\PatchCoverage;
  * git commit
  */
 class GitChanged {
-	/**
-	 * @var string[]
-	 */
-	public $added = [];
-
-	/**
-	 * @var string[]
-	 */
-	public $modified = [];
-
-	/**
-	 * @var string[]
-	 */
-	public $deleted = [];
-
-	/**
-	 * @var array
-	 */
-	public $renamed = [];
-
-	/**
-	 * @param array $added
-	 * @param array $modified
-	 * @param array $deleted
-	 * @param array $renamed
-	 */
-	public function __construct( $added = [], $modified = [], $deleted = [],
-		$renamed = []
+	public function __construct(
+		/** @var string[] */
+		public array $added = [],
+		/** @var string[] */
+		public array $modified = [],
+		/** @var string[] */
+		public array $deleted = [],
+		/** @var string[] */
+		public array $renamed = [],
 	) {
-		$this->added = $added;
-		$this->modified = $modified;
-		$this->deleted = $deleted;
-		$this->renamed = $renamed;
 	}
 
 	/**
 	 * @return array|int[]|string[]
 	 */
-	public function getPreviousFiles() {
+	public function getPreviousFiles(): array {
 		return array_merge(
 			$this->deleted,
 			$this->modified,
@@ -74,7 +51,7 @@ class GitChanged {
 	/**
 	 * @return array|string[]
 	 */
-	public function getNewFiles() {
+	public function getNewFiles(): array {
 		return array_merge(
 			$this->added,
 			$this->modified,

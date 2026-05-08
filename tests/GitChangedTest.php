@@ -28,9 +28,6 @@ use PHPUnit\Framework\TestCase;
  */
 class GitChangedTest extends TestCase {
 
-	/**
-	 * @var GitChanged
-	 */
 	private GitChanged $changed;
 
 	public function setUp(): void {

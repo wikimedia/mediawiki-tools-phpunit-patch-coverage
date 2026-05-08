@@ -27,16 +27,7 @@ use Symfony\Component\Finder\Finder;
  */
 class TestFinder {
 
-	/**
-	 * @var string
-	 */
-	private $testDir;
-
-	/**
-	 * @param string $testDir
-	 */
-	public function __construct( $testDir ) {
-		$this->testDir = $testDir;
+	public function __construct( private readonly string $testDir ) {
 	}
 
 	/**
@@ -44,7 +35,7 @@ class TestFinder {
 	 *
 	 * @return string[] Absolute filenames to tests
 	 */
-	public function find( array $classes ) {
+	public function find( array $classes ): array {
 		if ( !$classes ) {
 			return [];
 		}

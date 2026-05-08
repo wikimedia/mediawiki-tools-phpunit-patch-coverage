@@ -38,7 +38,7 @@ class ClassFinder {
 	 * @param array $files
 	 * @return string[] Fully qualified class names
 	 */
-	public function find( array $files ) {
+	public function find( array $files ): array {
 		if ( !$files ) {
 			return [];
 		}

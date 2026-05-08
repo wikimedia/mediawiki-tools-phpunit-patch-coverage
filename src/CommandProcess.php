@@ -20,6 +20,7 @@ declare( strict_types = 1 );
 
 namespace MediaWiki\Tool\PatchCoverage;
 
+use Closure;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
@@ -29,28 +30,17 @@ use Symfony\Component\Process\Process;
  */
 class CommandProcess extends Process {
 
-	/**
-	 * @param OutputInterface $output
-	 */
-	public function mustRunWithOutput( OutputInterface $output ) {
+	public function mustRunWithOutput( OutputInterface $output ): void {
 		$output->writeln( '$ ' . $this->getCommandLine() );
 		$this->mustRun( $this->makeCallback( $output ) );
 	}
 
-	/**
-	 * @param OutputInterface $output
-	 */
-	public function runWithOutput( OutputInterface $output ) {
+	public function runWithOutput( OutputInterface $output ): void {
 		$output->writeln( '$ ' . $this->getCommandLine() );
 		$this->run( $this->makeCallback( $output ) );
 	}
 
-	/**
-	 * @param OutputInterface $output
-	 *
-	 * @return \Closure
-	 */
-	private function makeCallback( OutputInterface $output ) {
+	private function makeCallback( OutputInterface $output ): Closure {
 		return static function ( $type, $buffer ) use ( $output ) {
 			$output->write( $buffer );
 		};

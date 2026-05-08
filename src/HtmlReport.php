@@ -30,14 +30,7 @@ use Wikimedia\CloverDiff\DiffPrinter;
  */
 class HtmlReport {
 
-	/**
-	 * @param Diff $diff
-	 * @param array $oldFiles
-	 * @param array $newFiles
-	 *
-	 * @return string
-	 */
-	public function report( Diff $diff, array $oldFiles, array $newFiles ) {
+	public function report( Diff $diff, array $oldFiles, array $newFiles ): string {
 		$html = <<<HTML
 <!DOCTYPE html>
 <html>
@@ -68,10 +61,7 @@ HTML;
 		return $html . '</body></html>';
 	}
 
-	/**
-	 * @return string
-	 */
-	private function getDiffStylesheet() {
+	private function getDiffStylesheet(): string {
 		return DiffHelper::getStyleSheet();
 	}
 }
