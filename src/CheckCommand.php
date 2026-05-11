@@ -157,7 +157,7 @@ class CheckCommand extends Command {
 		$changedFiles = [];
 		$changedTests = [];
 		foreach ( $files as $file ) {
-			if ( strpos( $file, $testDir ) === 0 ) {
+			if ( str_starts_with( $file, $testDir ) ) {
 				$changedTests[] = $file;
 			} else {
 				$changedFiles[] = $file;
