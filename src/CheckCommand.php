@@ -123,15 +123,26 @@ class CheckCommand extends Command {
 		return $clover;
 	}
 
-	protected function saveFiles( CloverXml $cloverXml ): array {
+	protected function saveFiles( CloverXml $cloverXml, string $cloverPath ): array {
+		$lineMap = $cloverXml->getFiles( $cloverXml::LINES );
+		// CloverXml::getFiles() returns paths relative to the directory common
+		// to every covered file, which can be deeper than the working
+		// directory (e.g. all files happen to live under includes/). Recover
+		// the prefix it stripped so the relative paths can be read back as real
+		// files instead of failing to open (T425807).
+		$prefix = $this->strippedPathPrefix( $cloverPath, array_key_first( $lineMap ) );
 		$files = [];
-		foreach ( $cloverXml->getFiles( $cloverXml::LINES ) as $fname => $lines ) {
+		foreach ( $lineMap as $fname => $lines ) {
 			// It has at least one covered line
 			if ( !array_sum( $lines ) ) {
 				continue;
 			}
-			$contents = file_get_contents( $fname );
-			if ( !$contents ) {
+			$path = $prefix . $fname;
+			if ( !is_readable( $path ) ) {
+				continue;
+			}
+			$contents = file_get_contents( $path );
+			if ( $contents === false ) {
 				continue;
 			}
 			$parts = explode( "\n", $contents );
@@ -147,10 +158,51 @@ class CheckCommand extends Command {
 				}
 			}
 			unset( $line );
+			// Key by the relative path so it matches Differ/HtmlReport, which
+			// also work off CloverXml::getFiles().
 			$files[$fname] = $parts;
 		}
 
 		return $files;
+	}
+
+	/**
+	 * Recover the directory prefix that CloverXml::getFiles() strips off the
+	 * absolute file paths. The same prefix is removed from every path, so it
+	 * can be derived from a single absolute/relative pair and prepended to the
+	 * relative paths to turn them back into readable files.
+	 *
+	 * @param string $cloverPath Path to the clover XML the report was read from
+	 * @param string|null $firstRelative First path returned by getFiles(), or
+	 *   null when there are no files
+	 * @return string Prefix to prepend to the relative paths (may be empty)
+	 */
+	private function strippedPathPrefix( string $cloverPath, ?string $firstRelative ): string {
+		if ( $firstRelative === null ) {
+			return '';
+		}
+		$previous = libxml_use_internal_errors( true );
+		$xml = simplexml_load_file( $cloverPath );
+		libxml_use_internal_errors( $previous );
+		if ( $xml === false ) {
+			return '';
+		}
+		// getFiles() walks the file nodes in document order, so the first one
+		// corresponds to $firstRelative.
+		$fileNodes = $xml->xpath( '//file[@name]' );
+		if ( !$fileNodes ) {
+			return '';
+		}
+		$firstAbsolute = (string)$fileNodes[0]['name'];
+		if ( $firstRelative === '' ) {
+			// The whole path was stripped (a single covered file)
+			return $firstAbsolute;
+		}
+		if ( str_ends_with( $firstAbsolute, $firstRelative ) ) {
+			return substr( $firstAbsolute, 0, -strlen( $firstRelative ) );
+		}
+		// Couldn't line them up; leave the paths untouched
+		return '';
 	}
 
 	protected function filterPaths( array $files, string $testDir ): array {
@@ -204,8 +256,9 @@ class CheckCommand extends Command {
 		$command = $input->getOption( 'command' );
 		if ( $filterRegex ) {
 			// Run it!
-			$newClover = new CloverXml( $this->runTests( $output, $command, $filterRegex ) );
-			$newFiles = $this->saveFiles( $newClover );
+			$newCloverPath = $this->runTests( $output, $command, $filterRegex );
+			$newClover = new CloverXml( $newCloverPath );
+			$newFiles = $this->saveFiles( $newClover, $newCloverPath );
 		} else {
 			$newClover = null;
 			$newFiles = [];
@@ -225,8 +278,9 @@ class CheckCommand extends Command {
 		) );
 		$filterOldRegex = $this->getFilterRegex( $testsOldToRun );
 		if ( $filterOldRegex ) {
-			$oldClover = new CloverXml( $this->runTests( $output, $command, $filterOldRegex ) );
-			$oldFiles = $this->saveFiles( $oldClover );
+			$oldCloverPath = $this->runTests( $output, $command, $filterOldRegex );
+			$oldClover = new CloverXml( $oldCloverPath );
+			$oldFiles = $this->saveFiles( $oldClover, $oldCloverPath );
 		} else {
 			$oldClover = null;
 			$oldFiles = [];
