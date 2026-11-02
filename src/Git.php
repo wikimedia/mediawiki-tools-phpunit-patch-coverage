@@ -27,10 +27,7 @@ use Symfony\Component\Process\Process;
  */
 class Git {
 
-	/**
-	 * @var string[]
-	 */
-	private static array $status = [
+	private const array STATUS = [
 		'A' => 'added',
 		'D' => 'deleted',
 		'M' => 'modified',
@@ -49,7 +46,7 @@ class Git {
 		$changed = new GitChanged();
 		$lines = explode( "\n", trim( $process->getOutput() ) );
 		foreach ( $lines as $line ) {
-			$status = self::$status[$line[0]];
+			$status = self::STATUS[$line[0]];
 			if ( $status === 'renamed' ) {
 				$matches = [];
 				preg_match( '/R\d{3}\s*(\S*)\s*(\S*)/', $line, $matches );
